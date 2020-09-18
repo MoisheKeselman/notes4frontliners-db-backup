@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-   return 'Welcome to the auto-saver. Please visit Notes for Fronliners to write a note at ____'
+   return 'Welcome to the auto-saver. Please visit <a href="https://notesforfrontliners.org/" >Notes for Fronliners</a> to write a note '
   
 @app.route('/save-db') 
 def save_db(): 
