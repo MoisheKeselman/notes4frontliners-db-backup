@@ -10,11 +10,12 @@ from datetime import datetime
 import firebase_admin
 from firebase_admin import db
 from firebase_admin import credentials
-from google.cloud import storage
+from firebase_admin import storage
 
 import json 
  
 TIME_FMT = "%Y-%m-%dT%H:%M:%S"
+FOLDER_NAME = 'backups'
 
 app = Flask(__name__) 
 
@@ -30,10 +31,10 @@ def save_db():
    if password == password_entered:
       data = db.reference('stats').get()  # TODO: change reference to be entire databases
 
-      filename = f'backups/{datetime.now().strftime(TIME_FMT)}.json'
+      filename = f'{FOLDER_NAME}/{datetime.now().strftime(TIME_FMT)}.json'  # FOLDER_NAME is both the local and remote folder name
       open(filename, 'w').write(json.dumps(data))
 
-      bucket = storage_client.bucket("backups")  # get storage reference
+      bucket = storage.bucket()  # get storage reference
       blob = bucket.blob(filename)  # create blob
       blob.upload_from_filename(filename)  # upload it
 
@@ -49,13 +50,12 @@ if __name__ == '__main__':
    creds = credentials.Certificate("key.json")
    firebase_admin.initialize_app(
       credential=creds, 
-      options={'databaseURL':'https://support-notes-for-frontliners.firebaseio.com/'
+      options={
+         'databaseURL':'https://support-notes-for-frontliners.firebaseio.com/',
+         'storageBucket':'support-notes-for-frontliners.appspot.com'
    })
 
-   os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = join(dirname(__file__), 'key.json')
-   storage_client = storage.Client()
-
-   if not os.path.exists('backups'):
-      os.mkdir('backups')
+   if not os.path.exists(FOLDER_NAME):
+      os.mkdir(FOLDER_NAME)
 
    app.run()
