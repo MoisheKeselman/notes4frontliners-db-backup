@@ -4,6 +4,8 @@ from flask import request
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+import base64
+from binascii import hexlify
 
 from datetime import datetime
 
@@ -18,6 +20,16 @@ TIME_FMT = "%Y-%m-%dT%H:%M:%S"
 FOLDER_NAME = 'backups'
 
 app = Flask(__name__) 
+
+
+def generate_google_service(fileName):
+    open(fileName, "w+").write(base64ToString(os.getenv("FIREBASE_SERVICE_CODE")))
+    return fileName
+
+
+def base64ToString(b):
+    return base64.b64decode(bytes(b, "utf-8").decode('unicode_escape')).decode('utf-8')
+
 
 @app.route('/')
 def home():
@@ -47,7 +59,10 @@ if __name__ == '__main__':
    dotenv_path = join(dirname(__file__), '.env')
    load_dotenv(dotenv_path)
    
-   creds = credentials.Certificate("key.json")
+   key_filename = 'key2.json'
+   generate_google_service(key_filename)
+
+   creds = credentials.Certificate(key_filename)
    firebase_admin.initialize_app(
       credential=creds, 
       options={
