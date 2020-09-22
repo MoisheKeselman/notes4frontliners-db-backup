@@ -41,7 +41,7 @@ def save_db():
    password = os.environ.get("PASSWORD")
    
    if password == password_entered:
-      data = db.reference('stats').get()  # TODO: change reference to be entire databases
+      data = db.reference('/').get()  # TODO: change reference to be entire databases
 
       filename = f'{FOLDER_NAME}/{datetime.now().strftime(TIME_FMT)}.json'  # FOLDER_NAME is both the local and remote folder name
       open(filename, 'w').write(json.dumps(data))
