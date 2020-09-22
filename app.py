@@ -33,7 +33,7 @@ def base64ToString(b):
 
 @app.route('/')
 def home():
-   return 'Welcome to the auto-saver. Please visit <a href="https://notesforfrontliners.org/" >Notes for Fronliners</a> to write a note '
+   return 'Welcome to the database saver. Please visit <a href="https://notesforfrontliners.org/"> Notes for Fronliners</a> to write a note </a>'
   
 @app.route('/save-db') 
 def save_db(): 
@@ -50,9 +50,9 @@ def save_db():
       blob = bucket.blob(filename)  # create blob
       blob.upload_from_filename(filename)  # upload it
 
-      return data
+      return 'Data saved :)'
 
-   return 'Password entered: %s <br>Correct password: %s' % (password_entered, password)
+   return 'Incorrect password'
   
 
 if __name__ == '__main__': 
@@ -72,6 +72,6 @@ if __name__ == '__main__':
 
    if not os.path.exists(FOLDER_NAME):
       os.mkdir(FOLDER_NAME)
-      
+
    port = int(os.environ.get('PORT', 5000))
    app.run(host='0.0.0.0', port=port)
